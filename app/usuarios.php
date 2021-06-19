@@ -13,7 +13,7 @@ class usuarios extends Model
           * @var array
           */
          protected $fillable = [
-            'nombre', 'apellidos','cedula','telefono', 'email'
+            'nombre', 'apellidos','cedula','telefono', 'email','id'
          ];
         
 }

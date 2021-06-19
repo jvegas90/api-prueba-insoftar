@@ -10,12 +10,29 @@ class UsuariosController extends Controller
     public function getAll()
     {
         $usuarios = usuarios::all();
-        return $usuarios;
+        return response()->json([
+            'data' => $usuarios,
+            'message' => 'list ok'
+        ], 201);
     }
     public function add(Request $request)
     {
-        $usuarios = usuarios::create($request->all());
-        return $usuarios;
+        $result = usuarios::where('cedula', '=', $request->cedula)
+            ->orWhere('email', '=', $request->email)
+            ->get();
+
+        if (sizeof($result) != 0) {
+            return response()->json([
+                'data' => $result,
+                'message' => 'user duplicated'
+            ], 201);
+        } else {
+            $usuarios = usuarios::create($request->all());
+            return response()->json([
+                'data' => $usuarios,
+                'message' => 'resource created'
+            ], 201);
+        }
     }
     public function get($id)
     {
@@ -29,7 +46,7 @@ class UsuariosController extends Controller
     {
         $usuarios = new usuarios();
         $usuarios = usuarios::find($id);
-       $usuarios->fill($request->all())->save();
+        $usuarios->fill($request->all())->save();
         return response()->json([
             'data' => $usuarios,
             'message' => 'resource created'
@@ -39,7 +56,10 @@ class UsuariosController extends Controller
     {
         $usuarios = usuarios::find($id);
         $usuarios->delete();
-        return $usuarios;
+        return response()->json([
+            'data' => $usuarios,
+            'message' => 'user deleted'
+        ], 201);
+       
     }
-    
 }
